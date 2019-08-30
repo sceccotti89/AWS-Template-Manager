@@ -19,5 +19,8 @@
   "homepage": "https://github.com/sceccotti89/AWS-Template-Manager#readme",
   "devDependencies": {
     "electron": "^6.0.6"
+  },
+  "dependencies": {
+    "ajv": "^6.10.2"
   }
 }
