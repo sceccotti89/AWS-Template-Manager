@@ -1,0 +1,23 @@
+{
+  "name": "aws-template-manager",
+  "version": "1.0.0",
+  "description": "Template Manager for AWS Cloud Projects",
+  "main": "index.js",
+  "scripts": {
+    "start": "electron .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sceccotti89/AWS-Template-Manager.git"
+  },
+  "author": "Stefano Ceccotti",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sceccotti89/AWS-Template-Manager/issues"
+  },
+  "homepage": "https://github.com/sceccotti89/AWS-Template-Manager#readme",
+  "devDependencies": {
+    "electron": "^6.0.6"
+  }
+}
