@@ -1,4 +1,5 @@
-const { app, BrowserWindow } = require('electron')
+const { app, BrowserWindow } = require('electron');
+require('electron-reload')(__dirname);
 
 // Mantiene un riferimento globale all'oggetto window, se non lo fai, la finestra sarà
 // chiusa automaticamente quando l'oggetto JavaScript sarà garbage collected.
@@ -10,12 +11,13 @@ function createWindow () {
     width: 800,
     height: 600,
     webPreferences: {
-      nodeIntegration: true
+      nodeIntegration: true,
+      webSecurity: false
     }
-  })
+  });
 
-  // and load the index.html of the app.
-  win.loadFile('index.html');
+  // and load the main.html of the app.
+  win.loadFile('src/main/main.html');
 
   // Apre il Pannello degli Strumenti di Sviluppo.
   // win.webContents.openDevTools();
