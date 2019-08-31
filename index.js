@@ -1,4 +1,9 @@
-const { app, BrowserWindow } = require('electron');
+const {
+  app,
+  BrowserWindow,
+  Menu,
+  dialog
+} = require('electron');
 require('electron-reload')(__dirname);
 
 // Mantiene un riferimento globale all'oggetto window, se non lo fai, la finestra sarà
@@ -8,7 +13,7 @@ let win;
 function createWindow () {
   // Creazione della finestra del browser.
   win = new BrowserWindow({
-    width: 800,
+    width: 1000,
     height: 600,
     webPreferences: {
       nodeIntegration: true,
@@ -16,11 +21,36 @@ function createWindow () {
     }
   });
 
+  const menu = Menu.buildFromTemplate([
+    {
+        label: 'Menu',
+        submenu: [
+            {
+              label:'Open file',
+              click() {
+                dialog.showOpenDialog({ properties: ['openFile', 'multiSelections']})
+                  .then((files) => {
+                    // Send an event to let the main page to open a file.
+                    win.webContents.send('openFile', files);
+                  }).catch((err) => console.err(err));
+              }
+            },
+            {
+              label:'Exit',
+              click() { 
+                app.quit();
+              }
+            }
+        ]
+    }
+  ])
+  Menu.setApplicationMenu(menu); 
+
   // and load the main.html of the app.
   win.loadFile('src/main/main.html');
 
   // Apre il Pannello degli Strumenti di Sviluppo.
-  // win.webContents.openDevTools();
+  win.webContents.openDevTools();
 
   // Emesso quando la finestra viene chiusa.
   win.on('closed', () => {
@@ -28,7 +58,7 @@ function createWindow () {
     // in array se l'applicazione supporta più finestre, questo è il momento in cui 
     // si dovrebbe eliminare l'elemento corrispondente.
     win = null;
-  })
+  });
 }
 
 // Questo metodo viene chiamato quando Electron ha finito
