@@ -1,7 +1,7 @@
 <ul class="nav nav-tabs">
-  <li class="nav-item">
-      <a class="nav-link active">
-          app_spec.json
+  <li class="nav-item" *ngFor="let tab of fileTabs; let index = index">
+      <a class="nav-link active" (click)="selectedTab(index)">
+          {{tab.name}}
       </a>
   </li>
 </ul>
