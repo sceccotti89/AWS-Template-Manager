@@ -1,4 +1,14 @@
 "use strict";
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -10,74 +20,29 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
-var AppComponent = /** @class */ (function () {
-    function AppComponent() {
-        this.STORAGE_FILES = "files";
-        if (window.require) {
-            try {
-                this.ipc = window.require('electron').ipcRenderer;
-            }
-            catch (error) {
-                throw error;
-            }
-        }
-        else {
-            console.warn('Could not load electron ipc');
-        }
+var file_service_1 = require("../services/file.service");
+var base_component_1 = require("./shared/base.component");
+var AppComponent = /** @class */ (function (_super) {
+    __extends(AppComponent, _super);
+    function AppComponent(fileService) {
+        var _this = _super.call(this) || this;
+        _this.fileService = fileService;
+        return _this;
     }
     AppComponent.prototype.ngOnInit = function () {
-        var _this = this;
-        this.ipc.on('openFile', function (event, message) {
-            var files = message;
-            if (typeof (Storage) !== "undefined") {
-                var storage = window.localStorage;
-                var openFiles_1 = JSON.parse(storage.getItem(_this.STORAGE_FILES)) || [];
-                files.forEach(function (filePath) {
-                    if (!openFiles_1.some(function (file) { return file === filePath; })) {
-                        openFiles_1.push(filePath);
-                        _this.openFile(filePath);
-                    }
-                });
-                storage.setItem(_this.STORAGE_FILES, JSON.stringify(openFiles_1));
-            }
-        });
-        this.loadOpenFiles();
-    };
-    AppComponent.prototype.loadOpenFiles = function () {
-        var _this = this;
-        if (typeof (Storage) !== "undefined") {
-            var storage = window.localStorage;
-            var openFiles = JSON.parse(storage.getItem("files")) || [];
-            openFiles.forEach(function (filePath) { return _this.openFile(filePath); });
-        }
-    };
-    AppComponent.prototype.openFile = function (filePath) {
-        var _this = this;
-        var xhr = new XMLHttpRequest();
-        xhr.onloadend = function (event) {
-            if (event.loaded && xhr.response) {
-                var contents = xhr.responseText;
-                // TODO save the object into a service to be rendered on screen
-            }
-            else {
-                var storage = window.localStorage;
-                var files = JSON.parse(storage.getItem(_this.STORAGE_FILES));
-                files.splice(files.findIndex(function (file) { return file === filePath; }), 1);
-                storage.setItem(_this.STORAGE_FILES, JSON.stringify(files));
-            }
-        };
-        xhr.open('GET', filePath);
-        xhr.send();
+        // this.fileService.openFile$
+        //   .takeUntil(this.unsubscribe)
+        //   .subscribe();
     };
     AppComponent = __decorate([
         core_1.Component({
-            moduleId: module.id,
             selector: 'my-app',
-            templateUrl: './app.component.html',
+            templateUrl: 'app/src/components/app.component.html',
+            styleUrls: ['app/src/components/app.component.scss']
         }),
-        __metadata("design:paramtypes", [])
+        __metadata("design:paramtypes", [file_service_1.FileService])
     ], AppComponent);
     return AppComponent;
-}());
+}(base_component_1.BaseComponent));
 exports.AppComponent = AppComponent;
 //# sourceMappingURL=app.component.js.map

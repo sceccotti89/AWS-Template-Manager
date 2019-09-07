@@ -1,7 +1,7 @@
-var Ajv = require('ajv');
-var ajv = new Ajv({allErrors: true});
+import Ajv = require('ajv');
+const ajv = new Ajv({ allErrors: true });
 
-var schema = {
+const schema = {
     "$id": "http://json-schema.org/draft-04/schema#",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
@@ -29,18 +29,27 @@ var schema = {
     }
 };
 
-var validate = ajv.compile(schema);
+const validator: Ajv.ValidateFunction = ajv.compile(schema);
 
-test({
-    "paths": {
-        "/[]": {
-            "value": 10
-        }
+exports.validateJSON = (data: string) : Ajv.ErrorObject[] => {
+    const valid = validator(data);
+    if (valid) {
+        return null;
+    } else {
+        return validator.errors;
     }
-});
-
-function test(data) {
-  var valid = validate(data);
-  if (valid) console.log('Valid!');
-  else console.log('Invalid: ' + ajv.errorsText(validate.errors));
 }
+
+// test({
+//     "paths": {
+//         "/[]": {
+//             "value": 10
+//         }
+//     }
+// });
+
+// function test(data) {
+//   var valid = validate(data);
+//   if (valid) console.log('Valid!');
+//   else console.log('Invalid: ' + ajv.errorsText(validate.errors));
+// }
