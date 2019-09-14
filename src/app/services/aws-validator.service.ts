@@ -2,14 +2,16 @@ import { Injectable } from "@angular/core";
 import * as Ajv from "ajv";
 import { ValidationResult } from "../models/data.model";
 
+// TODO break schema into sub-schemas
 const schema = {
     "$id": "http://json-schema.org/draft-04/schema#",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "properties": {
+        "Description": { "type": "string" },
         "AWSTemplateFormatVersion": {
             "type": "string",
-            "pattern": "([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))",
+            // "pattern": "[1-2]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[1-2]\d|3[0-1])", // FIXME
             "enum": ["2010-09-09"]
         },
         "Transform": {
@@ -18,8 +20,8 @@ const schema = {
         },
         "Resources": {
             "type": "object",
-            "patternProperties": {
-                "^\/[0-9].*\\?|$": { // TODO non sono sicuro che sia questo il REGEX per le RESOURCES
+            "properties": {
+                "OrderAPI": { // TODO REGEX for RESOURCES
                     "type": "object",
                     "properties": {
                         "Type": {
@@ -34,10 +36,32 @@ const schema = {
                         },
                         "Properties": {
                             "type": "object",
-                            "DefinitionBody" : {
-                                "type": "object",
-                                "": {
-
+                            "properties": {
+                                "DefinitionBody" : {
+                                    "type": "object",
+                                    "properties": {
+                                        "info": {
+                                            "type": "object",
+                                            "properties": {
+                                                "title": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "Ref": {
+                                                            "type": "string",
+                                                            "enum": ["AWS::StackName"]
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        "paths": {
+                                            "patternProperties": {
+                                                "^\/[0-9].*\\?|$": {
+                                                    "type": "object"
+                                                }
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -59,11 +83,12 @@ export class AwsValidatorService
         this.validator = this.ajv.compile(schema);
     }
 
-    public validate(data: string): ValidationResult {
+    public validate(data: any): ValidationResult {
         const valid = this.validator(data);
         if (valid) {
             return new ValidationResult(true, null);
         } else {
+            // return new ValidationResult(false, this.ajv.errorsText(this.validator.errors));
             return new ValidationResult(false, this.validator.errors);
         }
     }

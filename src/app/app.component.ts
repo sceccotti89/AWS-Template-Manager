@@ -69,14 +69,15 @@ export class AppComponent implements OnInit {
     xhr.onloadend = (event) => {
       if (event.loaded && xhr.response) {
         const content = xhr.responseText;
+        const awsObject = JSON.parse(content);
 
         // Validate the file content.
-        const validationResult = this.awsValidator.validate(content);
+        const validationResult = this.awsValidator.validate(awsObject);
         if (!validationResult.isValid) {
           console.warn(validationResult.validationErrors);
         } else {
           const filePaths = filePath.split('/');
-          this.fileTabs.push({ name: filePaths[filePaths.length - 1], content: content, selected });
+          this.fileTabs.push({ name: filePaths[filePaths.length - 1], content: awsObject, selected });
         }
       } else if (this.storage) {
         const files: FileStorage[] = JSON.parse(this.storage.getItem(this.STORAGE_FILES));
