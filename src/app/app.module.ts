@@ -7,6 +7,7 @@ import { FormsModule } from '@angular/forms';
 import { RoundProgressModule } from 'angular-svg-round-progressbar';
 import { FileTabComponent } from './fileTab/fileTab.component';
 import { CommonModule } from '@angular/common';
+import { AwsValidatorService } from './services/aws-validator.service';
 
 @NgModule({
   declarations: [
@@ -19,7 +20,7 @@ import { CommonModule } from '@angular/common';
     FormsModule, // <-- here
     RoundProgressModule // <-- and here
   ],
-  providers: [],
+  providers: [AwsValidatorService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
