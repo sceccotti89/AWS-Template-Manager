@@ -1,5 +1,9 @@
 <div id="file-tab-container">
-    <div *ngFor="let resource of resources">
-        {{resource.name}}
+    <div
+        class="file-tab-item"
+        *ngFor="let resource of resources"
+    >
+        <span class="resource-type">{{resource.content.Type}}</span>
+        <span>{{resource.name}}</span>
     </div>
 </div>

@@ -8,11 +8,13 @@ import { RoundProgressModule } from 'angular-svg-round-progressbar';
 import { FileTabComponent } from './fileTab/fileTab.component';
 import { CommonModule } from '@angular/common';
 import { AwsValidatorService } from './services/aws-validator.service';
+import { ResourceComponent } from './fileTab/resource/resource.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    FileTabComponent
+    FileTabComponent,
+    ResourceComponent
   ],
   imports: [
     BrowserModule, 

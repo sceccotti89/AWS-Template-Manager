@@ -6,4 +6,21 @@ $offset: 42;
     height: calc(100% - #{$offset}px);
     overflow-y: auto;
     flex-wrap: nowrap;
+    padding: 5px;
+}
+
+.file-tab-item {
+    cursor: pointer;
+    border-style: solid;
+    border-width: 2px;
+    border-radius: 8px;
+    padding: 8px;
+    margin-top: 5px;
+}
+
+.resource-type {
+    border-style: solid;
+    border-width: 2px;
+    border-radius: 8px;
+    padding: 5px;
 }
