@@ -120,7 +120,7 @@ export class AppComponent implements OnInit {
     this.selectedTab = index;
   }
 
-  public getContent() {
+  public getContent(): any {
     return this.fileTabs[this.selectedTab].content;
   }
 }

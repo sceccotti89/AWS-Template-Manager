@@ -16,6 +16,7 @@ export class FileTabComponent implements OnInit {
     const res = this.content.Resources;
     this.resources = Object.keys(res)
                            .map((key) => ({ name: key, content: res[key] }));
+    console.log(this.resources);
   }
 
   public get getResources(): any[] {
