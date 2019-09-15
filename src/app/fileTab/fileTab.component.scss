@@ -1,0 +1,9 @@
+$offset: 42;
+
+#file-tab-container {
+    position: relative;
+    top: #{$offset}px;
+    height: calc(100% - #{$offset}px);
+    overflow-y: auto;
+    flex-wrap: nowrap;
+}

@@ -15,8 +15,8 @@ import { AwsValidatorService } from './services/aws-validator.service';
 })
 export class AppComponent implements OnInit {
   private ipc: any;
-  private STORAGE_FILES = "files";
-  private storage = window.localStorage;
+  private readonly STORAGE_FILES = "files";
+  private readonly storage = window.localStorage;
 
   public isIpcLoaded: boolean; // TODO use this to adjust the UI
   public selectedTab = -1;
@@ -121,6 +121,6 @@ export class AppComponent implements OnInit {
   }
 
   public getContent() {
-    return this.fileTabs[this.selectedTab];
+    return this.fileTabs[this.selectedTab].content;
   }
 }

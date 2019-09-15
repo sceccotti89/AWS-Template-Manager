@@ -1,3 +1,15 @@
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+#nav-tabs-container {
+    position: fixed;
+    z-index: 10;
+    width: 100%;
+}
+
 .nav-item {
     &:hover {
         cursor: pointer;

@@ -5,19 +5,24 @@ import { ValidationResult } from "../models/data.model";
 @Injectable()
 export class AwsValidatorService
 {
-    private schema; // TODO break schema into sub-schemas
     private ajv;
-    private validator;
+    private validationErrors;
+
+    private readonly AWSServerlessType = [
+        { type: "AWS::Serverless::Api", func: this.validateAWSServerlessApiSchema },
+        { type: "AWS::Serverless::Application", func: this.validateAWSServerlessApplicationSchema },
+        { type: "AWS::Serverless::Function", func: this.validateAWSServerlessFunctionSchema },
+        { type: "AWS::Serverless::LayerVersion", func: this.validateAWSServerlessLayerVersionSchema },
+        { type: "AWS::Serverless::SimpleTable", func: this.validateAWSServerlessSimpleTableSchema }
+    ];
 
     constructor() {
-        this.createSchema();
-
+        // [{"name":"assets/app_spec.json","selected":true}]
         this.ajv = new Ajv({ allErrors: true });
-        this.validator = this.ajv.compile(this.schema);
     }
 
-    private createSchema() {
-        this.schema = {
+    private validateSchema(data: any): boolean {
+        const schema = {
             "$id": "http://json-schema.org/draft-04/schema#",
             "$schema": "http://json-schema.org/draft-04/schema#",
             "type": "object",
@@ -49,55 +54,106 @@ export class AwsValidatorService
                                     ]
                                 },
                                 "Properties": {
-                                    "type": "object",
-                                    "properties": {
-                                        "DefinitionBody" : {
-                                            "type": "object",
-                                            "properties": {
-                                                "info": {
-                                                    "type": "object",
-                                                    "properties": {
-                                                        "title": {
-                                                            "type": "object",
-                                                            "properties": {
-                                                                "Ref": {
-                                                                    "type": "string",
-                                                                    "enum": ["AWS::StackName"]
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                },
-                                                "paths": {
-                                                    "patternProperties": {
-                                                        "^\/[0-9].*\\?|$": {
-                                                            "type": "object"
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
+                                    "type": "object"
                                 }
-                            }   
+                            } 
                         }
                     }
                 }
             }
         };
+
+        const validator = this.ajv.compile(schema);
+        const valid = validator(data);
+        this.validationErrors = validator.errors;
+        return valid;
     }
 
-    private addSchemaAWSServerlessApi(): void {
+    private validateAWSServelessSchema(data: any): boolean {
+        const AWStype = this.AWSServerlessType.find((awsType) => awsType.type === data.Type);
+        if (AWStype && AWStype.func) {
+            return AWStype.func.bind(this)(data.Properties);
+        }
+        this.validationErrors = "AWS Serverless type " + data.type + " not found";
+        return false;
+    }
 
+    private validateAWSServerlessApiSchema(data: any): boolean {
+        console.log("AWS API data:", data);
+        const schema = {
+            "type": "object",
+            "properties": {
+                "DefinitionBody" : {
+                    "type": "object",
+                    "properties": {
+                        "info": {
+                            "type": "object",
+                            "properties": {
+                                "title": {
+                                    "type": "object",
+                                    "properties": {
+                                        "Ref": {
+                                            "type": "string",
+                                            "enum": ["AWS::StackName"]
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "paths": {
+                            "patternProperties": {
+                                "^\/[0-9].*\\?|$": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        };
+
+        const validator = this.ajv.compile(schema);
+        const valid = validator(data);
+        this.validationErrors = this.ajv.errorsText(validator.errors);
+        return valid;
+    }
+
+    private validateAWSServerlessApplicationSchema(data: any): boolean {
+        // console.log("AWS Application data:", data);
+        return true;
+    }
+
+    private validateAWSServerlessFunctionSchema(data: any): boolean {
+        // console.log("AWS Function data:", data);
+        return true;
+    }
+
+    private validateAWSServerlessLayerVersionSchema(data: any): boolean {
+        // console.log("AWS LayerVersion data:", data);
+        return true;
+    }
+
+    private validateAWSServerlessSimpleTableSchema(data: any): boolean {
+        // console.log("AWS SimpleTable data:", data);
+        return true;
+    }
+
+    private validateData(data: any): any {
+        console.log(data);
+        if (this.validateSchema(data)) {
+            return Object.keys(data.Resources).reduce((valid, key) => {
+                return valid && this.validateAWSServelessSchema(data.Resources[key]);
+            }, true);
+        }
+        return false;
     }
 
     public validate(data: any): ValidationResult {
-        const valid = this.validator(data);
+        const valid = this.validateData(data);
         if (valid) {
             return new ValidationResult(true, null);
         } else {
-            // return new ValidationResult(false, this.ajv.errorsText(this.validator.errors));
-            return new ValidationResult(false, this.validator.errors);
+            return new ValidationResult(false, this.validationErrors);
         }
     }
 }

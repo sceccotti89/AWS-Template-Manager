@@ -1,9 +1,11 @@
-<ul class="nav nav-tabs">
-  <li class="nav-item" *ngFor="let tab of fileTabs; let index = index">
-    <a class="nav-link" [class.active]="tab.selected" (click)="setSelectedTab(index)">
-        {{tab.name}}
-    </a>
-  </li>
-</ul>
+<div class="wrapper max-height">
+  <ul id="nav-tabs-container" class="nav nav-tabs">
+    <li class="nav-item" *ngFor="let tab of fileTabs; let index = index">
+      <a class="nav-link" [class.active]="tab.selected" (click)="setSelectedTab(index)">
+          {{tab.name}}
+      </a>
+    </li>
+  </ul>
 
-<app-file-tab [content]="getContent()" *ngIf="selectedTab >= 0"></app-file-tab>
+  <app-file-tab class="max-height" [content]="getContent()" *ngIf="selectedTab >= 0"></app-file-tab>
+</div>
