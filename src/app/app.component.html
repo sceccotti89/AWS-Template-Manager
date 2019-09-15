@@ -1,9 +1,9 @@
 <ul class="nav nav-tabs">
   <li class="nav-item" *ngFor="let tab of fileTabs; let index = index">
-    <a class="nav-link" [class.active]="tab.selected" (click)="selectedTab(index)">
+    <a class="nav-link" [class.active]="tab.selected" (click)="setSelectedTab(index)">
         {{tab.name}}
     </a>
   </li>
 </ul>
 
-<app-file-tab></app-file-tab>
+<app-file-tab [content]="getContent()" *ngIf="selectedTab >= 0"></app-file-tab>

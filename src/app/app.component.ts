@@ -19,6 +19,7 @@ export class AppComponent implements OnInit {
   private storage = window.localStorage;
 
   public isIpcLoaded: boolean; // TODO use this to adjust the UI
+  public selectedTab = -1;
   public fileTabs: FileTab[] = [];
 
   constructor(private awsValidator: AwsValidatorService) {
@@ -40,16 +41,11 @@ export class AppComponent implements OnInit {
       this.ipc.on('openFile', (event, message) => {
         const files = message;
         if (this.storage) {
-          const openFiles: FileStorage[] = JSON.parse(this.storage.getItem(this.STORAGE_FILES)) || [];
-
           files.forEach((filePath) => {
-            if (!openFiles.some((file) => file === filePath)) {
-              openFiles.push({ name: filePath, selected: true });
-              this.openFile(filePath, true);
+            if (!this.isFileExisitingInStorage(filePath)) {
+              this.openFile(filePath, true, true);
             }
           });
-
-          this.storage.setItem(this.STORAGE_FILES, JSON.stringify(openFiles));
         }
       });
     }
@@ -60,11 +56,11 @@ export class AppComponent implements OnInit {
   private loadOpenFiles() {
     if (this.storage) {
       const openFiles: FileStorage[] = JSON.parse(this.storage.getItem("files")) || [];
-      openFiles.forEach((file) => this.openFile(file.name, file.selected));
+      openFiles.forEach((file) => this.openFile(file.name, file.selected, false));
     }
   }
 
-  private openFile(filePath: string, selected: boolean): void {
+  private openFile(filePath: string, selected: boolean, store: boolean): void {
     const xhr = new XMLHttpRequest();
     xhr.onloadend = (event) => {
       if (event.loaded && xhr.response) {
@@ -75,21 +71,56 @@ export class AppComponent implements OnInit {
         const validationResult = this.awsValidator.validate(awsObject);
         if (!validationResult.isValid) {
           console.warn(validationResult.validationErrors);
+          this.removeFileFromStorage(filePath);
         } else {
           const filePaths = filePath.split('/');
           this.fileTabs.push({ name: filePaths[filePaths.length - 1], content: awsObject, selected });
+          if (store) {
+            this.addFileIntoStorage(filePath, selected);
+          }
+          if (selected) {
+            this.selectedTab = this.fileTabs.length - 1;
+          }
         }
-      } else if (this.storage) {
-        const files: FileStorage[] = JSON.parse(this.storage.getItem(this.STORAGE_FILES));
-        files.splice(files.findIndex((file) => file.name === filePath), 1);
-        this.storage.setItem(this.STORAGE_FILES, JSON.stringify(files));
+      } else {
+        this.removeFileFromStorage(filePath);
       }
     }
     xhr.open('GET', filePath);
     xhr.send();
   }
 
-  public selectedTab(index: number) {
+  private isFileExisitingInStorage(filePath: string): boolean {
+    if (this.storage) {
+      const openFiles: FileStorage[] = JSON.parse(this.storage.getItem(this.STORAGE_FILES)) || [];
+      return openFiles.some((file) => file.name === filePath);
+    }
+
+    return false;
+  }
+
+  private addFileIntoStorage(name: string, selected: boolean): void {
+    if (this.storage) {
+      const openFiles: FileStorage[] = JSON.parse(this.storage.getItem(this.STORAGE_FILES)) || [];
+      openFiles.push({ name, selected });
+      this.storage.setItem(this.STORAGE_FILES, JSON.stringify(openFiles));
+    }
+  }
+
+  private removeFileFromStorage(filePath: string): void {
+    if (this.storage) {
+      const files: FileStorage[] = JSON.parse(this.storage.getItem(this.STORAGE_FILES));
+      files.splice(files.findIndex((file) => file.name === filePath), 1);
+      this.storage.setItem(this.STORAGE_FILES, JSON.stringify(files));
+    }
+  }
+
+  public setSelectedTab(index: number) {
     this.fileTabs[index].selected = true;
+    this.selectedTab = index;
+  }
+
+  public getContent() {
+    return this.fileTabs[this.selectedTab];
   }
 }

@@ -2,85 +2,93 @@ import { Injectable } from "@angular/core";
 import * as Ajv from "ajv";
 import { ValidationResult } from "../models/data.model";
 
-// TODO break schema into sub-schemas
-const schema = {
-    "$id": "http://json-schema.org/draft-04/schema#",
-    "$schema": "http://json-schema.org/draft-04/schema#",
-    "type": "object",
-    "properties": {
-        "Description": { "type": "string" },
-        "AWSTemplateFormatVersion": {
-            "type": "string",
-            // "pattern": "[1-2]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[1-2]\d|3[0-1])", // FIXME
-            "enum": ["2010-09-09"]
-        },
-        "Transform": {
-            "type": "string",
-            "enum": ["AWS::Serverless-2016-10-31"]
-        },
-        "Resources": {
+@Injectable()
+export class AwsValidatorService
+{
+    private schema; // TODO break schema into sub-schemas
+    private ajv;
+    private validator;
+
+    constructor() {
+        this.createSchema();
+
+        this.ajv = new Ajv({ allErrors: true });
+        this.validator = this.ajv.compile(this.schema);
+    }
+
+    private createSchema() {
+        this.schema = {
+            "$id": "http://json-schema.org/draft-04/schema#",
+            "$schema": "http://json-schema.org/draft-04/schema#",
             "type": "object",
             "properties": {
-                "OrderAPI": { // TODO REGEX for RESOURCES
+                "Description": { "type": "string" },
+                "AWSTemplateFormatVersion": {
+                    "type": "string",
+                    // "pattern": "[1-2]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[1-2]\d|3[0-1])", // FIXME
+                    "enum": ["2010-09-09"]
+                },
+                "Transform": {
+                    "type": "string",
+                    "enum": ["AWS::Serverless-2016-10-31"]
+                },
+                "Resources": {
                     "type": "object",
                     "properties": {
-                        "Type": {
-                            "type": "string",
-                            "enum": [
-                                "AWS::Serverless::Api",
-                                "AWS::Serverless::Application",
-                                "AWS::Serverless::Function",
-                                "AWS::Serverless::LayerVersion",
-                                "AWS::Serverless::SimpleTable"
-                            ]
-                        },
-                        "Properties": {
+                        "A-Za-z0-9": {
                             "type": "object",
                             "properties": {
-                                "DefinitionBody" : {
+                                "Type": {
+                                    "type": "string",
+                                    "enum": [
+                                        "AWS::Serverless::Api",
+                                        "AWS::Serverless::Application",
+                                        "AWS::Serverless::Function",
+                                        "AWS::Serverless::LayerVersion",
+                                        "AWS::Serverless::SimpleTable"
+                                    ]
+                                },
+                                "Properties": {
                                     "type": "object",
                                     "properties": {
-                                        "info": {
+                                        "DefinitionBody" : {
                                             "type": "object",
                                             "properties": {
-                                                "title": {
+                                                "info": {
                                                     "type": "object",
                                                     "properties": {
-                                                        "Ref": {
-                                                            "type": "string",
-                                                            "enum": ["AWS::StackName"]
+                                                        "title": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "Ref": {
+                                                                    "type": "string",
+                                                                    "enum": ["AWS::StackName"]
+                                                                }
+                                                            }
                                                         }
                                                     }
-                                                }
-                                            }
-                                        },
-                                        "paths": {
-                                            "patternProperties": {
-                                                "^\/[0-9].*\\?|$": {
-                                                    "type": "object"
+                                                },
+                                                "paths": {
+                                                    "patternProperties": {
+                                                        "^\/[0-9].*\\?|$": {
+                                                            "type": "object"
+                                                        }
+                                                    }
                                                 }
                                             }
                                         }
                                     }
                                 }
-                            }
+                            }   
                         }
-                    }   
+                    }
                 }
             }
-        }
+        };
     }
-};
 
-@Injectable()
-export class AwsValidatorService
-{
-    private ajv;
-    private validator;
+    private addSchemaAWSServerlessApi(): void {
 
-    constructor() {
-        this.ajv = new Ajv({ allErrors: true });
-        this.validator = this.ajv.compile(schema);
     }
 
     public validate(data: any): ValidationResult {
