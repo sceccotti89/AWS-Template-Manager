@@ -10,12 +10,12 @@ export class FileTabComponent implements OnInit {
 
   private resources: any[];
   private readonly AWSServerlessTypeColor = [
-    { type: "AWS::Serverless::Api", color: '#00e600' },
-    { type: "AWS::Serverless::Application", color: '#00e600' },
-    { type: "AWS::Serverless::Function", color: '#00e600' },
-    { type: "AWS::Serverless::LayerVersion", color: '#00e600' },
-    { type: "AWS::Serverless::SimpleTable", color: '#00e600' }
-];
+    { type: "AWS::Serverless::Api", color: '#00e600', opacityColor: '#00e60030' },
+    { type: "AWS::Serverless::Application", color: '#ffff33', opacityColor: '#ffff3330' },
+    { type: "AWS::Serverless::Function", color: '#ff3333', opacityColor: '#ff333330' },
+    { type: "AWS::Serverless::LayerVersion", color: '#003cb3', opacityColor: '#003cb330' },
+    { type: "AWS::Serverless::SimpleTable", color: '#ff80ff', opacityColor: '#ff80ff30' }
+  ];
   
   constructor() {}
 
@@ -23,15 +23,15 @@ export class FileTabComponent implements OnInit {
     const res = this.content.Resources;
     console.log(res);
     this.resources = Object.keys(res)
-                      .map((key) => ({
-                        name: key,
-                        content: res[key],
-                        bgColor: this.AWSServerlessTypeColor.find((color) => color.type === res[key].Type).color
-                      }));
+      .map((key) => {
+        const awsType = this.AWSServerlessTypeColor.find((color) => color.type === res[key].Type);
+        return {
+          name: key,
+          content: res[key],
+          color: awsType.color,
+          opacityColor: awsType.opacityColor
+        };
+      });
     console.log(this.resources);
-  }
-
-  public get getResources(): any[] {
-    return this.resources;
   }
 }

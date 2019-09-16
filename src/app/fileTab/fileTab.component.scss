@@ -15,7 +15,11 @@ $offset: 42;
     border-width: 2px;
     border-radius: 8px;
     padding: 8px;
-    margin-top: 5px;
+    margin-top: 10px;
+    opacity: 0.85;
+    &:hover {
+        opacity: 1;
+    }
 }
 
 .resource-type {
@@ -23,4 +27,5 @@ $offset: 42;
     border-width: 2px;
     border-radius: 8px;
     padding: 5px;
+    color: white;
 }

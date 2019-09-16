@@ -1,9 +1,17 @@
 <div id="file-tab-container">
     <div
         class="file-tab-item"
+        [style.border-color]="resource.color"
+        [style.background-color]="resource.opacityColor"
         *ngFor="let resource of resources"
     >
-        <span class="resource-type">{{resource.content.Type}}</span>
-        <span>{{resource.name}}</span>
+        <span
+            class="resource-type"
+            [style.border-color]="resource.color"
+            [style.background-color]="resource.color"
+        >
+            {{resource.content.Type}}
+        </span>
+        <span style="margin-left: 10px">{{resource.name}}</span>
     </div>
 </div>
