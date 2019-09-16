@@ -60,32 +60,36 @@ export class AppComponent implements OnInit {
     xhr.onloadend = (event) => {
       if (event.loaded && xhr.response) {
         const content = xhr.responseText;
-        let awsObject;
-        try {
-          awsObject = JSON.parse(content);
-        } catch (error) {
-          this.removeFileFromStorage(filePath);
-          return console.error(error);
-        }
-
-        // Validate the file content.
-        const validationResult = this.awsValidator.validate(awsObject);
-        if (!validationResult.isValid) {
-          console.warn(validationResult.validationErrors);
-          this.removeFileFromStorage(filePath);
-        } else {
-          const filePaths = filePath.split('/');
-          this.dataService.addFile(filePaths[filePaths.length - 1], awsObject, selected);
-          if (store) {
-            this.addFileIntoStorage(filePath, selected);
-          }
-        }
+        this.validateFile(filePath, content, selected, store);
       } else {
         this.removeFileFromStorage(filePath);
       }
     };
     xhr.open('GET', filePath);
     xhr.send();
+  }
+
+  private validateFile(filePath: string, content: any, selected: boolean, store: boolean) {
+    let awsObject;
+    try {
+      awsObject = JSON.parse(content);
+    } catch (error) {
+      this.removeFileFromStorage(filePath);
+      return console.error(error);
+    }
+
+    // Validate the file content.
+    const validationResult = this.awsValidator.validate(awsObject);
+    if (!validationResult.isValid) {
+      console.warn(validationResult.validationErrors);
+      this.removeFileFromStorage(filePath);
+    } else {
+      const filePaths = filePath.split('/');
+      this.dataService.addFile(filePaths[filePaths.length - 1], awsObject, selected);
+      if (store) {
+        this.addFileIntoStorage(filePath, selected);
+      }
+    }
   }
 
   private isFileExisitingInStorage(filePath: string): boolean {
@@ -136,17 +140,12 @@ export class AppComponent implements OnInit {
     const keys = Object.keys(files);
     keys.forEach((key, index) => {
       const file = files[key];
-      // const reader = new FileReader();
-      // reader.readAsText(file, 'UTF-8');
-      // reader.onload = function (evt) {
-      //   console.log('File:', file);
-      //   if (!_this.isFileExisitingInStorage('')) {
-      //     _this.openFile('src/assets/' + file.name, true, true);
-      //   }
-      // };
-      if (!_this.isFileExisitingInStorage('')) {
-        _this.openFile('src/assets/' + file.name, true, true);
-      }
+      const reader = new FileReader();
+      reader.readAsText(file, 'UTF-8');
+      reader.onload = function (evt) {
+        const content = evt.target['result'];
+        _this.validateFile('/' + file.name, content, index === keys.length - 1, false);
+      };
     });
   }
 }
