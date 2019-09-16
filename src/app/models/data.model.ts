@@ -1,5 +1,6 @@
 export interface FileStorage {
     name: string;
+    path: string;
     selected: boolean;
 }
 

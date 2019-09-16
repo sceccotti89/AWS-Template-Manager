@@ -1,3 +1,7 @@
+<div *ngIf="!isIpcLoaded">
+  <input #fileLoader type="file" (change)="onFilesSelected()" multiple>
+</div>
+
 <div class="wrapper max-height">
   <ul id="nav-tabs-container" class="nav nav-tabs">
     <li class="nav-item" *ngFor="let tab of fileTabs; let index = index">
