@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
-import { FileTab, FileStorage } from './models/data.model';
+import { FileStorage } from './models/data.model';
 import { AwsValidatorService } from './services/aws-validator.service';
+import { DataService } from './services/data.service';
 // import 'rxjs/add/observable/interval';
 // import 'rxjs/add/operator/map';
 // import 'rxjs/add/operator/takeWhile';
@@ -19,10 +19,9 @@ export class AppComponent implements OnInit {
   private readonly storage = window.localStorage;
 
   public isIpcLoaded: boolean; // TODO use this to adjust the UI
-  public selectedTab = -1;
-  public fileTabs: FileTab[] = [];
 
-  constructor(private awsValidator: AwsValidatorService) {
+  constructor(private awsValidator: AwsValidatorService,
+    private dataService: DataService) {
     if ((<any>window).require) {
       try {
         this.ipc = (<any>window).require('electron').ipcRenderer;
@@ -74,12 +73,9 @@ export class AppComponent implements OnInit {
           this.removeFileFromStorage(filePath);
         } else {
           const filePaths = filePath.split('/');
-          this.fileTabs.push({ name: filePaths[filePaths.length - 1], content: awsObject, selected });
+          this.dataService.addFile(filePaths[filePaths.length - 1], awsObject, selected);
           if (store) {
             this.addFileIntoStorage(filePath, selected);
-          }
-          if (selected) {
-            this.selectedTab = this.fileTabs.length - 1;
           }
         }
       } else {
@@ -115,12 +111,11 @@ export class AppComponent implements OnInit {
     }
   }
 
-  public setSelectedTab(index: number) {
-    this.fileTabs[index].selected = true;
-    this.selectedTab = index;
+  public get fileTabs() {
+    return this.dataService.fileTabs;
   }
 
-  public getContent(): any {
-    return this.fileTabs[this.selectedTab].content;
+  public setSelectedTab(index: number) {
+    this.dataService.setSelectedTab(index);
   }
 }

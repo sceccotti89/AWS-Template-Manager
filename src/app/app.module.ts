@@ -3,26 +3,27 @@ import { NgModule } from '@angular/core';
 
 import { AppComponent } from './app.component';
 
-import { FormsModule } from '@angular/forms';
-import { RoundProgressModule } from 'angular-svg-round-progressbar';
-import { FileTabComponent } from './fileTab/fileTab.component';
+import { FileTabComponent } from './components/fileTab/fileTab.component';
 import { CommonModule } from '@angular/common';
 import { AwsValidatorService } from './services/aws-validator.service';
-import { ResourceComponent } from './fileTab/resource/resource.component';
+import { ResourceComponent } from './components/fileTab/resource/resource.component';
+import { AppRoutingModule } from './app-routing.module';
+import { DataService } from './services/data.service';
+import { BaseComponent } from './components/shared/base.component';
 
 @NgModule({
   declarations: [
     AppComponent,
+    BaseComponent,
     FileTabComponent,
     ResourceComponent
   ],
   imports: [
     BrowserModule, 
     CommonModule,
-    FormsModule, // <-- here
-    RoundProgressModule // <-- and here
+    AppRoutingModule
   ],
-  providers: [AwsValidatorService],
+  providers: [AwsValidatorService, DataService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
