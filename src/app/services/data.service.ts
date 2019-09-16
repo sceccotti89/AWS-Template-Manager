@@ -7,6 +7,7 @@ export class DataService
 {
     public fileTabs: FileTab[] = [];
     public selectedTab = -1;
+    public selectedResource: any;
 
     private uploadFilesSource = new Subject<void>();
     public uploadFiles$ = this.uploadFilesSource.asObservable();

@@ -1,0 +1,13 @@
+$offset: 42;
+
+:host {
+    height: 100%;
+}
+
+#resource-container {
+    position: relative;
+    top: #{$offset}px;
+    height: calc(100% - #{$offset}px);
+    overflow-y: auto;
+    padding: 5px;
+}

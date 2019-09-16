@@ -1,5 +1,9 @@
 $offset: 42;
 
+:host {
+    height: 100%;
+}
+
 #file-tab-container {
     position: relative;
     top: #{$offset}px;

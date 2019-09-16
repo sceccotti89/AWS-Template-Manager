@@ -1,0 +1,11 @@
+<div id="resource-container">
+    <!-- TODO creare un form -->
+    Name: {{resource?.name}}
+    <br/>
+    Type: {{resource?.content.Type}}
+
+    <div *ngIf="hasChanged()">
+        <button type="button" class="btn btn-primary">Save</button>
+        <button type="button" class="btn btn-primary">Cancel</button>
+    </div>
+</div>

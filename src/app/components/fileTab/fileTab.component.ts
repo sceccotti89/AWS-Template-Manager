@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, NavigationExtras } from '@angular/router';
 import { DataService } from '../../services/data.service';
 import 'rxjs/add/operator/takeUntil';
 import { BaseComponent } from '../shared/base.component';
@@ -58,6 +58,7 @@ export class FileTabComponent extends BaseComponent implements OnInit {
 
   public openResource(resource: any) {
     console.log('HERE', resource);
+    this.dataService.selectedResource = resource;
     this.router.navigateByUrl('/resource');
   }
 }

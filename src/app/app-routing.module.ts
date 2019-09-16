@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { ResourceComponent } from './components/fileTab/resource/resource.component';
+import { ResourceComponent } from './components/resource/resource.component';
 import { FileTabComponent } from './components/fileTab/fileTab.component';
 
 const routes: Routes = [
