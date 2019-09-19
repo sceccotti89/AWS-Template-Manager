@@ -1,13 +1,35 @@
-<div class="resource-info" *ngIf="content.paths">
-    <div class="resource-header">
+<!-- START DEFINITIONS -->
+<div class="resource-info" *ngIf="content.definitions">
+    <div class="resource-header" (click)="selectedContent('definitions')">
         <span>
-            <i class="fa fa-caret-right"></i>
+            <i class="fa fa-caret-down" *ngIf="isVisible('definitions')"></i>
+            <i class="fa fa-caret-right" *ngIf="!isVisible('definitions')"></i>
+            <span class="resource-name">DEFINITIONS</span>
+        </span>
+    </div>
+    <div class="resource-content" *ngIf="isVisible('definitions')">
+        
+    </div>
+</div>
+<!-- END DEFINITIONS -->
+
+<!-- START PATHS -->
+<div class="resource-info" *ngIf="content.paths">
+    <div class="resource-header" (click)="selectedContent('paths')">
+        <span>
+            <i class="fa fa-caret-down" *ngIf="isVisible('paths')"></i>
+            <i class="fa fa-caret-right" *ngIf="!isVisible('paths')"></i>
             <span class="resource-name">PATHS</span>
         </span>
     </div>
-    <div class="resource-content">
-        HELLO <br/>
-        SONO <br/>
-        IO
+    <div class="resource-content" *ngIf="isVisible('paths')">
+        <div
+            class="resource-item path-item"
+            *ngFor="let path of getEnumerableData(content.paths)"
+            (click)="false"
+        >
+            <span style="margin-left: 10px">{{path}}</span>
+        </div>
     </div>
 </div>
+<!-- END PATHS -->

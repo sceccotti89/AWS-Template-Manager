@@ -26,8 +26,8 @@ export class ResourceComponent extends BaseComponent implements OnInit {
         .takeUntil(this.unsubscribe)
         .subscribe((resource) => {
             if (resource) {
-                this.initialResource = JSON.parse(JSON.stringify(resource));
-                this.resource = this.initialResource;
+                this.initialResource = this.clone(resource);
+                this.resource = this.clone(resource);
                 console.log('REEEESOURCE:', this.resource);
             }
         });
@@ -35,21 +35,25 @@ export class ResourceComponent extends BaseComponent implements OnInit {
         console.log('URL:', this.router.url);
 
         if (this.dataService.selectedResource) {
-            this.initialResource = JSON.parse(JSON.stringify(this.dataService.selectedResource));
-            this.resource = this.initialResource;
+            this.initialResource = this.clone(this.dataService.selectedResource);
+            this.resource = this.clone(this.dataService.selectedResource);
             console.log('Resource:', this.resource);
         }
     }
 
-    public resourceExists() {
+    private clone(data: any): any {
+        return JSON.parse(JSON.stringify(data));
+    }
+
+    public resourceExists(): boolean {
         return !!this.resource;
     }
 
     public hasChanged(): boolean {
-        return this.initialResource !== this.resource;
+        return JSON.stringify(this.initialResource) !== JSON.stringify(this.resource);
     }
 
     public reset(): void {
-        this.resource = this.initialResource;
+        this.resource = this.clone(this.initialResource);
     }
 }

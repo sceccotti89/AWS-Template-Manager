@@ -19,8 +19,10 @@
             <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 {{resource.content.Type}}
             </button>
-            <div class="dropdown-menu" *ngFor="let type of awsTypes">
-                <a class="dropdown-item">{{type}}</a>
+            <div class="dropdown-menu">
+                <a class="dropdown-item"
+                    *ngFor="let type of awsTypes"
+                    (click)="resource.content.Type = type">{{type}}</a>
             </div>
         </div>
     </div>
