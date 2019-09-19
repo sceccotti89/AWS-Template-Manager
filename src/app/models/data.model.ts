@@ -1,10 +1,13 @@
 export interface FileStorage {
+    id: string;
     name: string;
     path: string;
+    resource: string;
     selected: boolean;
 }
 
 export interface FileTab {
+    id: string;
     name: string;
     content: any;
     selected: boolean;

@@ -12,7 +12,7 @@ import { FileService } from './services/file.service';
 export class AppComponent implements OnInit {
   private ipc: any;
 
-  public isIpcLoaded: boolean; // TODO use this to adjust the UI
+  public isIpcLoaded: boolean; // TODO use this to adjust the UI on the web page
   @ViewChild('fileLoader') fileLoader: ElementRef;
 
   constructor(private awsValidator: AwsValidatorService,
@@ -38,26 +38,26 @@ export class AppComponent implements OnInit {
 
         files.forEach((filePath) => {
           if (!this.fileService.isFileExisitingInStorage(filePath)) {
-            this.openFile(filePath, true, true);
+            this.openFile(null, filePath, true, true, null);
           }
         });
       });
     }
 
-    this.loadOpenFiles();
+    this.loadStoredFiles();
   }
 
-  private loadOpenFiles() {
+  private loadStoredFiles() {
     const openFiles: FileStorage[] = this.fileService.getAllFilesInStorage();
-    openFiles.forEach((file) => this.openFile(file.path + file.name, file.selected, false));
+    openFiles.forEach((file) => this.openFile(file.id, file.path + file.name, file.selected, false, file.resource));
   }
 
-  private openFile(filePath: string, selected: boolean, store: boolean): void {
+  private openFile(id: string, filePath: string, selected: boolean, store: boolean, resource: string): void {
     const xhr = new XMLHttpRequest();
     xhr.onloadend = (event) => {
       if (event.loaded && xhr.response) {
         const content = xhr.responseText;
-        this.validateFile(filePath, content, selected, store);
+        this.validateFile(id, filePath, content, selected, store, resource);
       } else {
         this.fileService.removeFileFromStorage(filePath);
       }
@@ -66,8 +66,8 @@ export class AppComponent implements OnInit {
     xhr.send();
   }
 
-  private validateFile(filePath: string, content: any, selected: boolean, store: boolean) {
-    let awsObject;
+  private validateFile(id: string, filePath: string, content: any, selected: boolean, store: boolean, resource: string) {
+    let awsObject: any;
     try {
       awsObject = JSON.parse(content);
     } catch (error) {
@@ -82,10 +82,10 @@ export class AppComponent implements OnInit {
       this.fileService.removeFileFromStorage(filePath);
     } else {
       const filePaths = filePath.split('/');
-      this.dataService.addFile(filePaths[filePaths.length - 1], awsObject, selected);
       if (store) {
-        this.fileService.addFileIntoStorage(filePath, selected);
+        id = this.fileService.addFileIntoStorage(filePath, selected, resource);
       }
+      this.dataService.addFile(id, filePaths[filePaths.length - 1], awsObject, selected, resource);
     }
   }
 
@@ -107,7 +107,7 @@ export class AppComponent implements OnInit {
       reader.readAsText(file, 'UTF-8');
       reader.onload = function (evt) {
         const content = evt.target['result'];
-        _this.validateFile('/' + file.name, content, index === keys.length - 1, false);
+        _this.validateFile(null, '/' + file.name, content, index === keys.length - 1, false, null);
       };
     });
   }

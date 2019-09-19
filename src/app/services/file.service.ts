@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core";
-import { FileStorage } from "../models/data.model";
+import { FileStorage, FileTab } from "../models/data.model";
+import * as uuid from 'uuid/v4';
 
 @Injectable()
 export class FileService
@@ -20,6 +21,13 @@ export class FileService
         return [];
     }
 
+    public updateFileInStorage(file: FileTab): void {
+        const files: FileStorage[] = JSON.parse(this.storage.getItem(this.STORAGE_FILES)) || [];
+        const index = files.findIndex((f) => file.id === f.id);
+        files[index].selected = file.selected;
+        this.storage.setItem(this.STORAGE_FILES, JSON.stringify(files));
+    }
+
     public isFileExisitingInStorage(filePath: string): boolean {
         if (this.storage) {
             const index = filePath.lastIndexOf('/');
@@ -32,15 +40,18 @@ export class FileService
         return false;
     }
     
-    public addFileIntoStorage(filePath: string, selected: boolean): void {
+    public addFileIntoStorage(filePath: string, selected: boolean, resource: string): string {
         if (this.storage) {
             const index = filePath.lastIndexOf('/');
             const path = filePath.substr(0, index + 1);
             const name = filePath.substr(index + 1);
             const openFiles: FileStorage[] = JSON.parse(this.storage.getItem(this.STORAGE_FILES)) || [];
-            openFiles.push({ name, path, selected });
+            const id: string = uuid();
+            openFiles.push({ id, name, path, selected, resource });
             this.storage.setItem(this.STORAGE_FILES, JSON.stringify(openFiles));
+            return id;
         }
+        return null;
     }
     
     public removeFileFromStorage(filePath: string): void {

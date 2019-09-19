@@ -36,20 +36,21 @@ export class FileTabComponent extends BaseComponent implements OnInit {
   }
 
   private loadResources() {
+    console.log('CARICO LE RESOURCES!!');
     const content = this.dataService.getContent();
-      const res = content.Resources;
-      console.log(res);
-      this.resources = Object.keys(res)
-        .map((key) => {
-          const awsType = this.AWSServerlessTypeColor.find((color) => color.type === res[key].Type);
-          return {
-            name: key,
-            content: res[key],
-            color: awsType.color,
-            opacityColor: awsType.opacityColor
-          };
-        });
-      console.log(this.resources);
+    const res = content.Resources;
+    console.log(res);
+    this.resources = Object.keys(res)
+      .map((key) => {
+        const awsType = this.AWSServerlessTypeColor.find((color) => color.type === res[key].Type);
+        return {
+          name: key,
+          content: res[key],
+          color: awsType.color,
+          opacityColor: awsType.opacityColor
+        };
+      });
+    console.log('Resources:', this.resources);
   }
 
   public selectedFile(): boolean {
@@ -58,7 +59,7 @@ export class FileTabComponent extends BaseComponent implements OnInit {
 
   public openResource(resource: any) {
     console.log('HERE', resource);
-    this.dataService.selectedResource = resource;
-    this.router.navigateByUrl('/resource');
+    this.dataService.setSelectedResource(resource);
+    this.router.navigateByUrl('/resource?q=' + resource.name);
   }
 }

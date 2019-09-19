@@ -1,5 +1,25 @@
 @import '../../../../assets/styles/variables.scss';
 
-#resource-container {
+.resource-info {
+    position: relative;
+    border-style: solid;
+    border-width: 2px;
+    border-radius: 8px;
+    border-color: gray;
+    padding: 8px;
+    margin-top: 10px;
+}
+
+.resource-header {
+    position: absolute;
+    display: inline;
+    left: 10px;
+    top: -15px;
+    padding: 2px;
     background-color: $main-bg-color;
+    cursor: pointer;
+}
+
+.resource-name {
+    color: blue;
 }

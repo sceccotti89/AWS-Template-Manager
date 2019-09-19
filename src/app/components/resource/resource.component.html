@@ -1,4 +1,4 @@
-<div id="resource-container" *ngIf="resource">
+<div id="resource-container" *ngIf="resourceExists()">
     <div class="input-group flex-nowrap">
         <div class="input-group-prepend">
             <span class="input-group-text" id="addon-wrapping">Name</span>
@@ -19,16 +19,18 @@
             <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 {{resource.content.Type}}
             </button>
-            <div class="dropdown-menu">
-                <a class="dropdown-item">Action</a>
-                <a class="dropdown-item">Another action</a>
-                <a class="dropdown-item">Something else here</a>
+            <div class="dropdown-menu" *ngFor="let type of awsTypes">
+                <a class="dropdown-item">{{type}}</a>
             </div>
         </div>
     </div>
 
-    <div [ngSwitch]="resource?.content.Type">
-        <app-resource-api *ngSwitchCase="isOfType(0)"></app-resource-api>
+    <div [ngSwitch]="resource.content.Type">
+        <app-resource-api
+            class="resource-type"
+            *ngSwitchCase="AWSTypes.API"
+            [content]="resource.content.Properties.DefinitionBody">
+        </app-resource-api>
     </div>
 
     <div *ngIf="hasChanged()">
