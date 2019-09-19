@@ -1,6 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { DataService } from "../../services/data.service";
 import { Router } from "@angular/router";
+import { AWSTypes } from "../../models/constants";
 
 @Component({
     selector: 'app-resource',
@@ -25,6 +26,10 @@ export class ResourceComponent implements OnInit {
 
     public hasChanged(): boolean {
         return this.initialResource !== this.resource;
+    }
+
+    public isOfType(index: number) {
+        return this.resource && this.resource.content.Type === AWSTypes[index];
     }
 
     public reset(): void {

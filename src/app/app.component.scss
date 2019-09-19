@@ -1,3 +1,5 @@
+@import '../assets/styles/variables.scss';
+
 .wrapper {
     display: flex;
     flex-direction: column;
@@ -14,4 +16,9 @@
     &:hover {
         cursor: pointer;
     }
+}
+
+.nav-link.active {
+    background-color: $main-bg-color;
+    border-color: $main-bg-color;
 }
