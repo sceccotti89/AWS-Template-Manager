@@ -21,11 +21,22 @@ export class FileService
         return [];
     }
 
+    public getFileFromStorage(id: string): FileStorage {
+        if (this.storage) {
+            const files: FileStorage[] = JSON.parse(this.storage.getItem(this.STORAGE_FILES)) || [];
+            return files.find((file) => file.id === id);
+        }
+        return null;
+    }
+
     public updateFileInStorage(file: FileTab): void {
-        const files: FileStorage[] = JSON.parse(this.storage.getItem(this.STORAGE_FILES)) || [];
-        const index = files.findIndex((f) => file.id === f.id);
-        files[index].selected = file.selected;
-        this.storage.setItem(this.STORAGE_FILES, JSON.stringify(files));
+        if (this.storage) {
+            const files: FileStorage[] = JSON.parse(this.storage.getItem(this.STORAGE_FILES)) || [];
+            const index = files.findIndex((f) => file.id === f.id);
+            files[index].selected = file.selected;
+            files[index].resource = file.resource;
+            this.storage.setItem(this.STORAGE_FILES, JSON.stringify(files));
+        }
     }
 
     public isFileExisitingInStorage(filePath: string): boolean {

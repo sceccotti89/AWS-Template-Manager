@@ -10,6 +10,7 @@ export interface FileTab {
     id: string;
     name: string;
     content: any;
+    resource: string;
     selected: boolean;
 }
 

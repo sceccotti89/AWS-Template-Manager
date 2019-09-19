@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { FileTab } from "../models/data.model";
+import { FileTab, FileStorage } from "../models/data.model";
 import { Subject } from "rxjs/Subject";
 import { Router } from "@angular/router";
 import { FileService } from "./file.service";
@@ -43,7 +43,7 @@ export class DataService
     }
 
     public addFile(id: string, filePath: string, content: any, selected: boolean, resourceId: string): void {
-        this.fileTabs.push({ id: id, name: filePath, content, selected });
+        this.fileTabs.push({ id: id, name: filePath, content, resource: resourceId, selected });
         if (selected) {
             this.selectedTab = this.fileTabs.length - 1;
             this.uploadFilesSource.next();
@@ -63,6 +63,10 @@ export class DataService
 
     public setSelectedResource(resource: any): void {
         console.log('NOTIFICO:', resource);
+        const file: FileTab = this.getSelectedTab();
+        file.resource = resource.name;
+        this.fileService.updateFileInStorage(file);
+
         this.selectedResource = resource;
         this.selectedResourceSource.next(resource);
     }
