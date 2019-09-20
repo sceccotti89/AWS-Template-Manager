@@ -6,14 +6,15 @@
   <ul id="nav-tabs-container" class="nav nav-tabs">
     <li class="nav-item" *ngFor="let tab of fileTabs; let index = index">
       <a class="nav-link" [class.active]="tab.selected" (click)="setSelectedTab(index)">
-          {{tab.name}}
+          {{tab.name}} <i class="fa fa-times" aria-hidden="true" (click)="closeFileTab($event, index)"></i>
       </a>
     </li>
   </ul>
 
-  <div class="toolbar" *ngIf="hasFileTabs()">
-    <button type="button" class="btn btn-primary btn-sm">Save</button>
-    <button type="button" class="btn btn-primary btn-sm">Cancel</button>
+  <div class="toolbar" *ngIf="showToolbar()">
+    <button type="button" class="btn btn-primary btn-sm" [disabled]="!hasResourceChanged()">Save</button>
+    <button type="button" class="btn btn-primary btn-sm" *ngIf="!hasResourceChanged()" (click)="closeResource()">Back</button>
+    <button type="button" class="btn btn-primary btn-sm" *ngIf="hasResourceChanged()">Cancel</button>
   </div>
 
   <router-outlet></router-outlet>

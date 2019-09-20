@@ -21,8 +21,9 @@
             </button>
             <div class="dropdown-menu">
                 <a class="dropdown-item"
-                    *ngFor="let type of awsTypes"
-                    (click)="resource.content.Type = type">{{type}}</a>
+                   *ngFor="let type of getTypes()"
+                   (click)="resource.content.Type = type">{{type}}
+                </a>
             </div>
         </div>
     </div>
@@ -32,10 +33,5 @@
             *ngSwitchCase="AWSTypes.API"
             [content]="resource.content.Properties.DefinitionBody">
         </app-resource-api>
-    </div>
-
-    <div *ngIf="hasChanged()">
-        <button type="button" class="btn btn-primary">Save</button>
-        <button type="button" class="btn btn-primary">Cancel</button>
     </div>
 </div>

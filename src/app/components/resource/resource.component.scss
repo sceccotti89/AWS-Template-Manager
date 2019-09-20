@@ -7,8 +7,8 @@
 #resource-container {
     background-color: $main-bg-color;
     position: relative;
-    top: #{$resource-offset}px;
-    height: calc(100% - #{$resource-offset}px);
+    top: #{$toolbar-offset}px;
+    height: calc(100% - #{$toolbar-offset}px);
     overflow-y: auto;
     padding: 5px;
 }

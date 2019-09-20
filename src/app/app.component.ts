@@ -1,8 +1,9 @@
 import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
-import { FileStorage } from './models/data.model';
+import { FileStorage, FileTab } from './models/data.model';
 import { AwsValidatorService } from './services/aws-validator.service';
 import { DataService } from './services/data.service';
 import { FileService } from './services/file.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -16,6 +17,7 @@ export class AppComponent implements OnInit {
   @ViewChild('fileLoader') fileLoader: ElementRef;
 
   constructor(private awsValidator: AwsValidatorService,
+    private router: Router,
     private dataService: DataService,
     private fileService: FileService) {
     if ((<any>window).require) {
@@ -66,7 +68,7 @@ export class AppComponent implements OnInit {
     xhr.send();
   }
 
-  private validateFile(id: string, filePath: string, content: any, selected: boolean, store: boolean, resource: string) {
+  private validateFile(id: string, filePath: string, content: any, selected: boolean, store: boolean, resource: string): void {
     let awsObject: any;
     try {
       awsObject = JSON.parse(content);
@@ -89,12 +91,48 @@ export class AppComponent implements OnInit {
     }
   }
 
-  public get fileTabs() {
+  public get fileTabs(): FileTab[] {
     return this.dataService.fileTabs;
   }
 
-  public hasFileTabs(): boolean {
-    return this.dataService.fileTabs && this.dataService.fileTabs.length > 0;
+  public closeFileTab(event: Event, index: number): void {
+    event.preventDefault();
+
+    const removedFile = this.fileTabs.splice(index, 1)[0];
+    const storageFile = this.fileService.getFileFromStorage(removedFile.id);
+    const path = storageFile.path + storageFile.name;
+    this.fileService.removeFileFromStorage(path);
+    index = Math.min(index, this.fileTabs.length - 1);
+    console.log('INDEX:', index);
+    if (index >= 0) {
+      this.setSelectedTab(index);
+      const selectedTab = this.dataService.getSelectedTab();
+      if (selectedTab.resource) {
+        this.router.navigateByUrl('/resource?q=' + selectedTab.resource);  
+      } else {
+        this.router.navigateByUrl('/home');
+      }
+    } else {
+      this.dataService.resetResource();
+      this.router.navigateByUrl('/home');
+    }
+  }
+
+  public showToolbar(): boolean {
+    return this.router.url.includes('resource') &&
+           this.dataService.fileTabs &&
+           this.dataService.fileTabs.length > 0;
+  }
+
+  public hasResourceChanged(): boolean {
+    return this.dataService.selectedResource &&
+           JSON.stringify(this.dataService.selectedResource) !==
+           JSON.stringify(this.dataService.initialSelectedResource);
+  }
+
+  public closeResource(): void {
+    this.dataService.setSelectedResource({ name: null });
+    this.router.navigateByUrl('/home');
   }
 
   public setSelectedTab(index: number) {

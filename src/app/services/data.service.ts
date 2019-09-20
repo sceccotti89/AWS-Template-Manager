@@ -9,7 +9,9 @@ export class DataService
 {
     public fileTabs: FileTab[] = [];
     public selectedTab = -1;
+
     public selectedResource: any;
+    public initialSelectedResource: any;
 
     private uploadFilesSource = new Subject<void>();
     public uploadFiles$ = this.uploadFilesSource.asObservable();
@@ -20,11 +22,11 @@ export class DataService
     constructor(private router: Router, private fileService: FileService) {}
 
     public setSelectedTab(index: number): void {
-        if (this.selectedTab === index) {
+        if (this.selectedTab === index && this.fileTabs[index].selected) {
             return;
         }
 
-        if (this.selectedTab >= 0) {
+        if (this.selectedTab >= 0 && this.selectedTab < this.fileTabs.length) {
             this.fileTabs[this.selectedTab].selected = false;
             this.fileService.updateFileInStorage(this.fileTabs[this.selectedTab]);
         }
@@ -52,20 +54,25 @@ export class DataService
                 const urlResourceId = this.router.url.substr(this.router.url.indexOf('q=') + 2);
                 if (urlResourceId === resourceId) {
                     const key = Object.keys(content.Resources).find((key) => key === resourceId);
-                    this.selectedResourceSource.next({ 'content': content.Resources[key], 'name': resourceId });
+                    const resource = { 'content': content.Resources[key], 'name': resourceId };
+                    this.setSelectedResource(resource);
+                    this.selectedResourceSource.next(resource);
                 }
             }
         }
     }
 
     public setSelectedResource(resource: any): void {
-        console.log('NOTIFICO:', resource);
         const file: FileTab = this.getSelectedTab();
         file.resource = resource.name;
         this.fileService.updateFileInStorage(file);
 
         this.selectedResource = resource;
-        this.selectedResourceSource.next(resource);
+        this.initialSelectedResource = JSON.parse(JSON.stringify(resource));
+    }
+
+    public resetResource(): void {
+        this.selectedResource = this.initialSelectedResource = null;
     }
 
     public getContent(): any {
