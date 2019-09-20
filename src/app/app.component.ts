@@ -93,6 +93,10 @@ export class AppComponent implements OnInit {
     return this.dataService.fileTabs;
   }
 
+  public hasFileTabs(): boolean {
+    return this.dataService.fileTabs && this.dataService.fileTabs.length > 0;
+  }
+
   public setSelectedTab(index: number) {
     this.dataService.setSelectedTab(index);
   }

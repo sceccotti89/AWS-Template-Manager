@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { FileTab, FileStorage } from "../models/data.model";
+import { FileTab } from "../models/data.model";
 import { Subject } from "rxjs/Subject";
 import { Router } from "@angular/router";
 import { FileService } from "./file.service";
@@ -50,11 +50,8 @@ export class DataService
 
             if (resourceId && this.router.url.includes('q=')) {
                 const urlResourceId = this.router.url.substr(this.router.url.indexOf('q=') + 2);
-                console.log('Url Resource Id:', urlResourceId);
-                console.log('RESOURCE:', content);
                 if (urlResourceId === resourceId) {
                     const key = Object.keys(content.Resources).find((key) => key === resourceId);
-                    console.log('Resource:', content.Resources[key]);
                     this.selectedResourceSource.next({ 'content': content.Resources[key], 'name': resourceId });
                 }
             }

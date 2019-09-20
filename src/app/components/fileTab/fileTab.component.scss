@@ -7,17 +7,9 @@
 #file-tab-container {
     background-color: $main-bg-color;
     position: relative;
-    top: #{$offset}px;
-    height: calc(100% - #{$offset}px);
+    top: #{$resource-offset}px;
+    height: calc(100% - #{$resource-offset}px);
     overflow-y: auto;
     flex-wrap: nowrap;
     padding: 5px;
-}
-
-.resource-type {
-    border-style: solid;
-    border-width: 2px;
-    border-radius: 8px;
-    padding: 5px;
-    color: white;
 }

@@ -22,3 +22,12 @@
     background-color: $main-bg-color;
     border-color: $main-bg-color;
 }
+
+.toolbar {
+    position: fixed;
+    width: 100%;
+    padding: 3px;
+    background-color: $main-bg-color;
+    top: #{$offset}px;
+    z-index: 10;
+}

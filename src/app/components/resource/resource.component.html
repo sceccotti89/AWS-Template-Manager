@@ -29,7 +29,6 @@
 
     <div [ngSwitch]="resource.content.Type">
         <app-resource-api
-            class="resource-type"
             *ngSwitchCase="AWSTypes.API"
             [content]="resource.content.Properties.DefinitionBody">
         </app-resource-api>
