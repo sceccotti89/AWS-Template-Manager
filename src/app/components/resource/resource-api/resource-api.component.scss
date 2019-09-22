@@ -29,7 +29,19 @@
     color: blue;
 }
 
+.card:first-child {
+    border-radius: 8px 8px 0 0;
+}
+
+.card:last-child {
+    border-radius: 0 0 8px 8px;
+}
+
 .card-header {
-    padding: 2px;
+    padding: 5px;
     cursor: pointer;
+
+    &:hover {
+        background-color: lightblue;
+    }
 }
