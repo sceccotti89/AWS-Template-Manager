@@ -1,24 +1,18 @@
-const {
-  app,
-  BrowserWindow,
-  Menu,
-  dialog
-} = require('electron');
-const tray = require('./tray');
+const { app,
+        BrowserWindow,
+        Menu,
+        dialog } = require('electron');
 
-// Keep a global reference of the window object, if you don't, the window will
-// be closed automatically when the JavaScript object is garbage collected.
-let mainWindow;
+let win;
 
 function createWindow () {
   // Create the browser window.
-  mainWindow = new BrowserWindow({
-    title: 'ng2-electron',
-    icon: `${__dirname}/app/assets/angular-logo.png`,
-    width: 800,
+  win = new BrowserWindow({
+    width: 800, 
     height: 600,
+    backgroundColor: '#ffffff',
+    icon: `file://${__dirname}/dist/assets/logo.png`,
     webPreferences: {
-      nodeIntegration: true,
       webSecurity: false
     }
   });
@@ -28,12 +22,12 @@ function createWindow () {
         label: 'Menu',
         submenu: [
             {
-              label:'Open file',
+              label:'Open File...',
               click() {
                 const files = dialog.showOpenDialog({ properties: ['openFile', 'multiSelections']});
                 // Send an event to let the main page to open a file.
                 if (files && files.length > 0) {
-                  mainWindow.webContents.send('openFile', files);
+                  win.webContents.send('openFile', files);
                 }
               }
             },
@@ -48,42 +42,36 @@ function createWindow () {
   ])
   Menu.setApplicationMenu(menu); 
 
-  // and load the index.html of the app.
-  mainWindow.loadURL(`file://${__dirname}/index.html`)
 
-  // show app on tray menu
-  tray.create(mainWindow);
+  win.loadURL(`file://${__dirname}/dist/index.html`)
 
-  // Open the DevTools.
-  mainWindow.webContents.openDevTools();
 
-  // Emitted when the window is closed.
-  mainWindow.on('closed', function () {
-    // Dereference the window object, usually you would store windows
-    // in an array if your app supports multi windows, this is the time
-    // when you should delete the corresponding element.
-    mainWindow = null;
+
+
+  //// uncomment below to open the DevTools.
+  win.webContents.openDevTools();
+
+  // Event when the window is closed.
+  win.on('closed', function () {
+    win = null
   })
 }
 
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
-app.on('ready', createWindow);
+// Create window on electron intialization
+app.on('ready', createWindow)
 
 // Quit when all windows are closed.
 app.on('window-all-closed', function () {
-  // On OS X it is common for applications and their menu bar
-  // to stay active until the user quits explicitly with Cmd + Q
+
+  // On macOS specific close process
   if (process.platform !== 'darwin') {
-    app.quit();
+    app.quit()
   }
-});
+})
 
 app.on('activate', function () {
-  // On OS X it's common to re-create a window in the app when the
-  // dock icon is clicked and there are no other windows open.
-  if (mainWindow === null) {
-    createWindow();
+  // macOS specific close process
+  if (win === null) {
+    createWindow()
   }
-});
+})

@@ -1,0 +1,18 @@
+<div id="file-tab-container" *ngIf="selectedFile()">
+    <div
+        class="resource-item"
+        [style.border-color]="resource.color"
+        [style.background-color]="resource.opacityColor"
+        *ngFor="let resource of resources"
+        (click)="openResource(resource)"
+    >
+        <span
+            class="resource-type"
+            [style.border-color]="resource.color"
+            [style.background-color]="resource.color"
+        >
+            {{resource.content.Type}}
+        </span>
+        <span style="margin-left: 10px">{{resource.name}}</span>
+    </div>
+</div>

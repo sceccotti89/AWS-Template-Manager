@@ -1,0 +1,50 @@
+<!-- START DEFINITIONS -->
+<div class="resource-info" *ngIf="content.definitions">
+    <div class="resource-header" (click)="selectedContent('definitions')">
+        <span>
+            <i class="fa fa-caret-down" *ngIf="isVisible('definitions')"></i>
+            <i class="fa fa-caret-right" *ngIf="!isVisible('definitions')"></i>
+            <span class="resource-name">DEFINITIONS</span>
+        </span>
+    </div>
+    <div class="resource-content" *ngIf="isVisible('definitions')">
+        
+    </div>
+</div>
+<!-- END DEFINITIONS -->
+
+<!-- START PATHS -->
+<div class="resource-info" *ngIf="content.paths">
+    <div class="resource-header" (click)="selectedContent('paths')">
+        <span>
+            <i class="fa fa-caret-down" *ngIf="isVisible('paths')"></i>
+            <i class="fa fa-caret-right" *ngIf="!isVisible('paths')"></i>
+            <span class="resource-name">PATHS</span>
+        </span>
+    </div>
+    <div class="resource-content" *ngIf="isVisible('paths')">
+        <div class="accordion" id="path-resources">
+            <div class="card" *ngFor="let path of getEnumerableData(content.paths); let index = index">
+                <div
+                    class="card-header"
+                    [id]="'heading' + index"
+                    [attr.data-target]="'#collapse' + index"
+                    data-toggle="collapse"
+                    aria-expanded="true"
+                    [attr.aria-controls]="'collapse' + index"
+                >
+                    {{path}}
+                </div>
+            
+                <div [id]="'collapse' + index" class="collapse" [attr.aria-labelledby]="'heading' + index" data-parent="#path-resources">
+                    <div class="card-body">
+                        <div class="resource-item" *ngFor="let method of getEnumerableData(content.paths[path])">
+                            {{method | uppercase}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END PATHS -->

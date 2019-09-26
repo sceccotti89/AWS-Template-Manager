@@ -1,7 +1,2 @@
-npm-debug.log*
-coverage
 node_modules
-typings
-
-**/*.js
-**/*.js.map
+dist

@@ -1,0 +1,33 @@
+@import '../assets/styles/variables.scss';
+
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+#nav-tabs-container {
+    position: fixed;
+    z-index: 10;
+    width: 100%;
+}
+
+.nav-item {
+    &:hover {
+        cursor: pointer;
+    }
+}
+
+.nav-link.active {
+    background-color: $main-bg-color;
+    border-color: $main-bg-color;
+}
+
+.toolbar {
+    position: fixed;
+    width: 100%;
+    padding: 3px;
+    background-color: $main-bg-color;
+    top: #{$offset}px;
+    z-index: 10;
+}

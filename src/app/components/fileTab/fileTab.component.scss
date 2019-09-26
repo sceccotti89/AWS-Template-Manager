@@ -1,0 +1,15 @@
+@import '../../../assets/styles/variables.scss';
+
+:host {
+    height: 100%;
+}
+
+#file-tab-container {
+    background-color: $main-bg-color;
+    position: relative;
+    top: #{$toolbar-offset}px;
+    height: calc(100% - #{$toolbar-offset}px);
+    overflow-y: auto;
+    flex-wrap: nowrap;
+    padding: 5px;
+}
