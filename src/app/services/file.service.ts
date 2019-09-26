@@ -1,10 +1,9 @@
-import { Injectable } from "@angular/core";
-import { FileStorage, FileTab } from "../models/data.model";
+import { Injectable } from '@angular/core';
+import { FileStorage, FileTab } from '../models/data.model';
 import * as uuid from 'uuid/v4';
 
 @Injectable()
-export class FileService
-{
+export class FileService {
     private readonly STORAGE_FILES = 'files';
     private readonly storage = window.localStorage;
 
@@ -41,7 +40,7 @@ export class FileService
 
     public isFileExisitingInStorage(filePath: string): boolean {
         if (this.storage) {
-            const index = filePath.lastIndexOf('/');
+            const index = filePath.replace('\\', '/').lastIndexOf('/');
             const path = filePath.substr(0, index + 1);
             const name = filePath.substr(index + 1);
             const openFiles: FileStorage[] = JSON.parse(this.storage.getItem(this.STORAGE_FILES)) || [];
@@ -53,7 +52,7 @@ export class FileService
     
     public addFileIntoStorage(filePath: string, selected: boolean, resource: string): string {
         if (this.storage) {
-            const index = filePath.lastIndexOf('/');
+            const index = filePath.replace('\\', '/').lastIndexOf('/');
             const path = filePath.substr(0, index + 1);
             const name = filePath.substr(index + 1);
             const openFiles: FileStorage[] = JSON.parse(this.storage.getItem(this.STORAGE_FILES)) || [];
@@ -67,7 +66,7 @@ export class FileService
     
     public removeFileFromStorage(filePath: string): void {
         if (this.storage) {
-            const index = filePath.lastIndexOf('/');
+            const index = filePath.replace('\\', '/').lastIndexOf('/');
             const path = filePath.substr(0, index + 1);
             const name = filePath.substr(index + 1);
             const files: FileStorage[] = JSON.parse(this.storage.getItem(this.STORAGE_FILES));
